@@ -3,6 +3,7 @@
     import { onMount } from 'svelte'
     let ready = false
     onMount(() => ready = true)
+
     export let data
 </script>
 
@@ -12,12 +13,12 @@
         <a in:fly="{{ y: 50, duration: 350 }}" href="/#" class="uppercase text-4xl lg:text-5xl xl:text-6xl font-chic-border lg:ml-10">Feeder</a>
     </div>
     <div class="hidden lg:flex w-full h-full items-center justify-center border-purple border-r-2">
-        <div in:fly="{{ y: 50, duration: 400 }}" class="text-2xl">{data}</div>
+        <div in:fly="{{ y: 50, duration: 400 }}" class="text-2xl">{data.account}</div>
     </div>
     <div class="flex w-full h-full bg-orange items-center justify-center">
         <div in:fly="{{ y: 50, duration: 450 }}" class="uppercase text-2xl text-deep-purple">
             {#if data}
-                {#await data}
+                {#await data.balance}
                     <span>connecting...</span>
                 {:then value} 
                     <span>{(value / 10**18).toFixed(2)} ETH</span>
