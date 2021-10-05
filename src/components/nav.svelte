@@ -23,7 +23,7 @@
         <a in:fly="{{ y: -50, duration: 400 }}" href="/#team" class="text-2xl">Team</a>
     </div>
     <div class="flex w-full h-full bg-orange items-center justify-center">
-        <a in:fly="{{ y: -50, duration: 450 }}" href="/wallet" class="uppercase text-2xl text-deep-purple">go to wallet</a>
+        <a in:fly="{{ y: -50, duration: 450 }}" href="/wallets" class="uppercase text-2xl text-deep-purple">go to wallet</a>
     </div>
     {/if}
 </nav>

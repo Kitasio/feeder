@@ -1,10 +1,17 @@
 <script>
-    import { fade, fly } from 'svelte/transition'
+    import { tick } from 'svelte';
+    import { defaultChainStore } from 'svelte-web3'
+    import { fly } from 'svelte/transition'
     import { onMount } from 'svelte'
     let ready = false
     onMount(() => ready = true)
 
     export let data
+
+    const connect = async () => {
+        await tick()
+        defaultChainStore.setBrowserProvider()
+    }
 </script>
 
 <nav class="grid grid-cols-2 lg:grid-cols-wallet-nav w-full font-chicago text-orange border-purple border-b-2">
@@ -17,14 +24,14 @@
     </div>
     <div class="flex w-full h-full bg-orange items-center justify-center">
         <div in:fly="{{ y: 50, duration: 450 }}" class="uppercase text-2xl text-deep-purple">
-            {#if data}
+            {#if data.balance}
                 {#await data.balance}
                     <span>connecting...</span>
                 {:then value} 
                     <span>{(value / 10**18).toFixed(2)} ETH</span>
                 {/await}
             {:else}
-                <span class="cursor-pointer">connect</span>
+                <span on:click={connect} class="cursor-pointer">connect</span>
             {/if}
         </div>
     </div>

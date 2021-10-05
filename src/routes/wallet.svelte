@@ -3,12 +3,10 @@
 </svelte:head>
 <script>
     import WalletNav from '../components/walletNav.svelte'
-    let abi = [{"inputs":[{"internalType":"address[]","name":"_wallet","type":"address[]"},{"internalType":"uint256[]","name":"_allocation","type":"uint256[]"},{"internalType":"string","name":"_name","type":"string"}],"name":"createFeeder","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"}],"name":"feeders","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"}]
+    let abi = [{"inputs":[{"internalType":"address[]","name":"_wallet","type":"address[]"},{"internalType":"uint256[]","name":"_allocation","type":"uint256[]"},{"internalType":"string","name":"_name","type":"string"}],"name":"createFeeder","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"feeders","outputs":[{"internalType":"uint256","name":"len","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_addr","type":"address"}],"name":"getFeeders","outputs":[{"components":[{"internalType":"address[]","name":"addresses","type":"address[]"},{"internalType":"uint256","name":"len","type":"uint256"}],"internalType":"struct FeederFactory.Birds","name":"","type":"tuple"}],"stateMutability":"view","type":"function"}]
     let feederABI = [{"inputs":[{"internalType":"address[]","name":"_wallet","type":"address[]"},{"internalType":"uint256[]","name":"_allocation","type":"uint256[]"},{"internalType":"string","name":"_name","type":"string"}],"stateMutability":"nonpayable","type":"constructor"},{"stateMutability":"payable","type":"fallback"},{"inputs":[],"name":"getBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"user","outputs":[{"internalType":"uint256","name":"allocation","type":"uint256"},{"internalType":"uint256","name":"withdrawn","type":"uint256"},{"internalType":"enum Feeder.STATE","name":"state","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"users","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdraw","outputs":[],"stateMutability":"payable","type":"function"},{"stateMutability":"payable","type":"receive"}]
+    let factoryContract = '0xD55d157FFc003847Aa23E278BB9DB52A22092d2D'
     import { defaultChainStore, web3, selectedAccount, connected, chainData } from 'svelte-web3'
-import Index from './index.svelte'
-import Layout from './__layout.svelte'
-
         
     $: checkAccount = $selectedAccount || '0x0000000000000000000000000000000000000000'
     $: balance = $connected ? $web3.eth.getBalance(checkAccount) : ''
@@ -23,18 +21,17 @@ import Layout from './__layout.svelte'
     let fundsToWithdraw
     let withdrawing
 
-    // $: remainingETH = (parseInt($walletBalance) * parseInt($userAllocation)) / 100 - parseInt($userWithdrawn) || '-'
     async function getFeeder() {
         if ($connected) {
-            let feederFactory = new $web3.eth.Contract(abi, '0x30e0a7c5c238023BCDdbf3E2A86E4eD494C953EA');
-            feeder = await feederFactory.methods.feeders(feederName).call()
-            console.log(feeder)
-            let initFeeder = new $web3.eth.Contract(feederABI, feeder);
-            let fetchFeederUser = await initFeeder.methods.user(checkAccount).call()
-            userAllocation = fetchFeederUser.allocation
-            userWithdrawn = fetchFeederUser.withdrawn
+            let feederFactory = new $web3.eth.Contract(abi, factoryContract);
+            feeder = await feederFactory.methods.getFeeders(checkAccount).call()
+            console.log(feeder[0])
+            // let initFeeder = new $web3.eth.Contract(feederABI, feeder);
+            // let fetchFeederUser = await initFeeder.methods.user(checkAccount).call()
+            // userAllocation = fetchFeederUser.allocation
+            // userWithdrawn = fetchFeederUser.withdrawn
 
-            walletBalance = initFeeder.methods.getBalance().call()
+            // walletBalance = initFeeder.methods.getBalance().call()
         }
     }
     async function withdrawFunds() {
@@ -53,7 +50,7 @@ import Layout from './__layout.svelte'
     async function createFeeder() {
         if ($connected) {
             contractCreationProgress = 'Creating wallet...'
-            let feederFactory = new $web3.eth.Contract(abi, '0x30e0a7c5c238023BCDdbf3E2A86E4eD494C953EA');
+            let feederFactory = new $web3.eth.Contract(abi, factoryContract);
             let newFeeder = await feederFactory.methods.createFeeder(
                 contract.addresses,
                 contract.allocations,
