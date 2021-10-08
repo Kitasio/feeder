@@ -13,15 +13,8 @@
     @tailwind base;
     @tailwind components;
     @tailwind utilities;
-    @font-face {
-        font-family: 'Chicago';
-        src: url("../ChicagoFLF.woff") format("woff");
-    }
-    .font-chic-border {
-        text-shadow: -3px 0 #382358, 0 3px #382358, 3px 0 #382358, 0 -3px #382358;
-        font-family: 'Chicago';
-        font-weight: 700;
-    }
+
+    
     @layer utilities {
     .font-thin {
         font-variation-settings: 'wght' 100;
