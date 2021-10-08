@@ -14,6 +14,7 @@ module.exports = {
       fontFamily: {
         'chicago': 'Chicago',
         'anon': '"Anonymous Pro"',
+        'quick': 'Quicksand',
       },
       gridTemplateColumns: {
         'nav': '20% 1fr 1fr 1fr 1fr 20%;',

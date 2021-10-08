@@ -30,6 +30,7 @@
   },
   "type": "module",
   "dependencies": {
+    "gun": "^0.2020.1235",
     "svelte-web3": "^2.2.1",
     "web3": "^1.6.0"
   }
